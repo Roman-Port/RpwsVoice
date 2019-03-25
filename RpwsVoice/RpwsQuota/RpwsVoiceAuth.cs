@@ -27,6 +27,20 @@ namespace RpwsVoice.RpwsQuota
             return acc;
         }
 
+        public static void AwardNewCredits(VoiceAccount account)
+        {
+            //Reward daily credits
+            DateTime lastTimeCreditsAwarded = new DateTime(account.last_token_awarded_time);
+            DateTime nowTime = DateTime.UtcNow;
+            double daysSinceLastUpdate = (nowTime - lastTimeCreditsAwarded).TotalDays;
+            account.credits += (float)daysSinceLastUpdate * Program.config.dailyCreditsGiven;
+            account.last_token_awarded_time = nowTime.Ticks;
+
+            //Cap the daily credits
+            if (account.credits > Program.config.maxDailyRefillCredits)
+                account.credits = Program.config.maxDailyRefillCredits;
+        }
+
         public static void SaveAccount(VoiceAccount acc)
         {
             Program.GetAccountsCollection().Update(acc);

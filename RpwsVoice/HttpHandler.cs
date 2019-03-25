@@ -23,6 +23,11 @@ namespace RpwsVoice
                     await VoiceTokenService.OnHttpRequest(e);
                     return;
                 }
+                if (e.Request.Path == "/me")
+                {
+                    await MeService.OnHttpRequest(e);
+                    return;
+                }
 
                 //If we aren't sure, go over
                 await VoiceService.VoiceServiceRequestHandler.OnHttpRequest(e);
